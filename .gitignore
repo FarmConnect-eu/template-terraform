@@ -13,6 +13,10 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# Backend configuration (may contain secrets)
+backend.tf
+!backend.tf.example
+
 # IDE
 .idea/
 .vscode/
