@@ -105,7 +105,7 @@ resource "proxmox_vm_qemu" "vm" {
   # Cloud-init via ISO only (all configuration in the ISO)
 
   # VM Lifecycle
-  onboot           = var.onboot
+  start_at_node_boot = var.onboot
   vm_state         = var.vm_state
   agent            = var.agent
   agent_timeout    = var.agent_timeout
