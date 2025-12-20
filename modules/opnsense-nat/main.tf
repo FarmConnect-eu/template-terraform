@@ -13,19 +13,23 @@ resource "opnsense_firewall_nat" "this" {
     port = var.target_port
   }
 
-  source = merge(
-    {
-      net    = var.source_net
-      invert = var.source_invert
-    },
-    var.source_port != "" ? { port = var.source_port } : {}
-  )
+  # Only include source block if we have non-default values
+  source = var.source_port != null ? {
+    net    = var.source_net
+    invert = var.source_invert
+    port   = var.source_port
+  } : {
+    net    = var.source_net
+    invert = var.source_invert
+  }
 
-  destination = merge(
-    {
-      net    = var.destination_net
-      invert = var.destination_invert
-    },
-    var.destination_port != "" ? { port = var.destination_port } : {}
-  )
+  # Only include port in destination if specified
+  destination = var.destination_port != null ? {
+    net    = var.destination_net
+    invert = var.destination_invert
+    port   = var.destination_port
+  } : {
+    net    = var.destination_net
+    invert = var.destination_invert
+  }
 }

@@ -21,7 +21,7 @@ variable "target_ip" {
 variable "target_port" {
   type        = string
   description = "Target port number or service name. For ranges use dash (e.g., '80-443')."
-  default     = ""
+  default     = null
 }
 
 variable "source_net" {
@@ -32,8 +32,8 @@ variable "source_net" {
 
 variable "source_port" {
   type        = string
-  description = "Source port (usually empty)"
-  default     = ""
+  description = "Source port number, range, or well-known name. Empty or null for any."
+  default     = null
 }
 
 variable "source_invert" {
@@ -51,7 +51,7 @@ variable "destination_net" {
 variable "destination_port" {
   type        = string
   description = "Destination port number or service name"
-  default     = ""
+  default     = null
 }
 
 variable "destination_invert" {
