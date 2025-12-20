@@ -259,6 +259,12 @@ variable "agent_timeout" {
   default     = 90
 }
 
+variable "automatic_reboot" {
+  description = "Allow automatic reboot when changes require it"
+  type        = bool
+  default     = true
+}
+
 variable "protection" {
   description = "Protéger contre la suppression"
   type        = bool

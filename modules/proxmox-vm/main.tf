@@ -97,6 +97,12 @@ resource "proxmox_vm_qemu" "vm" {
     link_down = false
   }
 
+  # Serial console (equivalent to: qm set VMID --serial0 socket)
+  serial {
+    id   = 0
+    type = "socket"
+  }
+
   # EFI Disk (automatic when using OVMF BIOS)
   dynamic "efidisk" {
     for_each = var.bios == "ovmf" ? [1] : []
@@ -112,7 +118,7 @@ resource "proxmox_vm_qemu" "vm" {
   vm_state         = var.vm_state
   agent            = var.agent
   agent_timeout    = var.agent_timeout
-  automatic_reboot = false
+  automatic_reboot = var.automatic_reboot
   protection       = var.protection
   hotplug          = var.hotplug
 
