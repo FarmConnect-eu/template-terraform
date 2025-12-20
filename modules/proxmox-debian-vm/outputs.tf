@@ -34,12 +34,12 @@ output "vm_state" {
 }
 
 output "vm_password" {
-  description = "Auto-generated password for fc-admin user"
-  value       = random_password.vm_password.result
+  description = "Password for cloud-init user (auto-generated or provided)"
+  value       = local.effective_password
   sensitive   = true
 }
 
 output "vm_user" {
-  description = "VM default user (standardized across all VMs)"
-  value       = "fc-admin"
+  description = "Cloud-init user name"
+  value       = var.ciuser
 }

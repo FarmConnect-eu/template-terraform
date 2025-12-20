@@ -12,20 +12,28 @@ locals {
     var.tags
   )
   tags_string = join(",", local.all_tags)
+
+  # Determine cloud-init mode
+  use_cloud_init_iso    = var.create_cloud_init_iso
+  use_external_iso      = var.cloud_init_iso_id != null
+  use_native_cloud_init = !local.use_cloud_init_iso && !local.use_external_iso
+
+  # Password: use provided or generate
+  effective_password = var.cipassword != null ? var.cipassword : random_password.vm_password.result
+
+  # SSH keys as newline-separated string for native cloud-init
+  sshkeys_string = length(var.ssh_keys) > 0 ? join("\n", var.ssh_keys) : null
 }
 
 # Auto-generate secure password for fc-admin user
 resource "random_password" "vm_password" {
-  length  = 24
-  special = true
-  numeric = true
-  upper   = true
-  lower   = true
+  length  = 16
+  special = false # Avoid special chars for console compatibility
 }
 
-# Auto-create cloud-init ISO if enabled
+# Auto-create cloud-init ISO if enabled (legacy mode)
 resource "proxmox_cloud_init_disk" "auto" {
-  count = var.create_cloud_init_iso ? 1 : 0
+  count = local.use_cloud_init_iso ? 1 : 0
 
   name     = "${var.vm_name}-cloud-init"
   pve_node = var.target_node
@@ -34,8 +42,8 @@ resource "proxmox_cloud_init_disk" "auto" {
   user_data = templatefile("${path.module}/templates/cloud-init-basic.yml", {
     hostname    = var.vm_name
     ssh_keys    = var.ssh_keys
-    ci_user     = "fc-admin"
-    ci_password = random_password.vm_password.result
+    ci_user     = var.ciuser
+    ci_password = local.effective_password
   })
 }
 
@@ -81,10 +89,20 @@ module "vm" {
   vlan_tag         = var.vlan_tag
   network_firewall = var.network_firewall
 
-  # Cloud-Init Configuration via ISO
-  os_type           = "cloud-init"
-  qemu_os           = "l26"
-  cloud_init_iso_id = var.cloud_init_iso_id != null ? var.cloud_init_iso_id : (length(proxmox_cloud_init_disk.auto) > 0 ? proxmox_cloud_init_disk.auto[0].id : null)
+  # Cloud-Init Configuration
+  os_type = "cloud-init"
+  qemu_os = "l26"
+
+  # ISO mode (legacy or external)
+  cloud_init_iso_id = local.use_external_iso ? var.cloud_init_iso_id : (local.use_cloud_init_iso && length(proxmox_cloud_init_disk.auto) > 0 ? proxmox_cloud_init_disk.auto[0].id : null)
+
+  # Native cloud-init params (when not using ISO)
+  ciuser       = local.use_native_cloud_init ? var.ciuser : null
+  cipassword   = local.use_native_cloud_init ? local.effective_password : null
+  sshkeys      = local.use_native_cloud_init ? local.sshkeys_string : null
+  ipconfig0    = local.use_native_cloud_init ? var.ipconfig0 : null
+  nameserver   = local.use_native_cloud_init ? var.nameserver : null
+  searchdomain = local.use_native_cloud_init ? var.searchdomain : null
 
   # BIOS/Boot Configuration (UEFI pour Debian moderne)
   bios       = "ovmf"

@@ -1,6 +1,7 @@
 locals {
-  # Déterminer si on utilise cloud-init (simplifié)
-  use_cloudinit_iso = var.cloud_init_iso_id != null
+  # Déterminer si on utilise cloud-init ISO ou les paramètres natifs
+  use_cloudinit_iso    = var.cloud_init_iso_id != null
+  use_cloudinit_native = !local.use_cloudinit_iso && var.ciuser != null
 }
 
 resource "proxmox_vm_qemu" "vm" {
@@ -102,7 +103,13 @@ resource "proxmox_vm_qemu" "vm" {
     }
   }
 
-  # Cloud-init via ISO only (all configuration in the ISO)
+  # Cloud-init native configuration (when not using custom ISO)
+  ciuser       = local.use_cloudinit_native ? var.ciuser : null
+  cipassword   = local.use_cloudinit_native ? var.cipassword : null
+  sshkeys      = local.use_cloudinit_native ? var.sshkeys : null
+  ipconfig0    = local.use_cloudinit_native ? var.ipconfig0 : null
+  nameserver   = local.use_cloudinit_native ? var.nameserver : null
+  searchdomain = local.use_cloudinit_native ? var.searchdomain : null
 
   # VM Lifecycle
   start_at_node_boot = var.onboot
