@@ -1,6 +1,10 @@
 locals {
   # Cloud-init via ISO: ISO handles EVERYTHING (user, password, network, packages, runcmd)
   use_cloudinit_iso = var.cloud_init_iso_id != null
+
+  # When using custom cloud-init ISO, disable Proxmox native cloud-init
+  # by not setting os_type to "cloud-init". Use "l26" for Linux instead.
+  effective_os_type = local.use_cloudinit_iso ? "l26" : var.os_type
 }
 
 resource "proxmox_vm_qemu" "vm" {
@@ -26,8 +30,8 @@ resource "proxmox_vm_qemu" "vm" {
     type = var.vga
   }
 
-  # OS Type
-  os_type = var.os_type
+  # OS Type - when using custom cloud-init ISO, use "l26" to prevent Proxmox native cloud-init
+  os_type = local.effective_os_type
   qemu_os = var.qemu_os
 
   # CPU Configuration
