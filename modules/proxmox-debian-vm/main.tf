@@ -13,10 +13,9 @@ locals {
   )
   tags_string = join(",", local.all_tags)
 
-  # Determine cloud-init mode
-  use_cloud_init_iso    = var.create_cloud_init_iso
-  use_external_iso      = var.cloud_init_iso_id != null
-  use_native_cloud_init = !local.use_cloud_init_iso && !local.use_external_iso
+  # Cloud-init ISO mode (for complex operations like runcmd, packages)
+  use_cloud_init_iso = var.create_cloud_init_iso
+  use_external_iso   = var.cloud_init_iso_id != null
 
   # Password: use provided or generate
   effective_password = var.cipassword != null ? var.cipassword : random_password.vm_password.result
@@ -93,16 +92,19 @@ module "vm" {
   os_type = "cloud-init"
   qemu_os = "l26"
 
-  # ISO mode (legacy or external)
+  # Cloud-init ISO (for complex operations: runcmd, write_files, packages)
   cloud_init_iso_id = local.use_external_iso ? var.cloud_init_iso_id : (local.use_cloud_init_iso && length(proxmox_cloud_init_disk.auto) > 0 ? proxmox_cloud_init_disk.auto[0].id : null)
 
-  # Native cloud-init params (when not using ISO)
-  ciuser       = local.use_native_cloud_init ? var.ciuser : null
-  cipassword   = local.use_native_cloud_init ? local.effective_password : null
-  sshkeys      = local.use_native_cloud_init ? local.sshkeys_string : null
-  ipconfig0    = local.use_native_cloud_init ? var.ipconfig0 : null
-  nameserver   = local.use_native_cloud_init ? var.nameserver : null
-  searchdomain = local.use_native_cloud_init ? var.searchdomain : null
+  # Native cloud-init params (always passed through for hybrid configuration)
+  # These work alongside cloud-init ISO:
+  # - Native: user, password, network (reliable, handled by Proxmox)
+  # - ISO: runcmd, write_files, packages (complex operations)
+  ciuser       = var.ciuser
+  cipassword   = local.effective_password
+  sshkeys      = local.sshkeys_string
+  ipconfig0    = var.ipconfig0
+  nameserver   = var.nameserver
+  searchdomain = var.searchdomain
 
   # BIOS/Boot Configuration (UEFI pour Debian moderne)
   bios       = "ovmf"
