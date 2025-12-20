@@ -270,3 +270,9 @@ variable "hotplug" {
   type        = string
   default     = "network,disk,usb"
 }
+
+variable "keyboard" {
+  description = "Keyboard layout for VNC console (fr, en-us, de, etc.)"
+  type        = string
+  default     = "fr"
+}

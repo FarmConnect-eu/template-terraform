@@ -98,4 +98,7 @@ module "vm" {
   agent_timeout = 90
   protection    = var.protection
   hotplug       = "network,disk,usb"
+
+  # Console
+  keyboard = var.keyboard
 }

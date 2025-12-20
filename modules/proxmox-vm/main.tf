@@ -17,9 +17,10 @@ resource "proxmox_vm_qemu" "vm" {
   full_clone = var.clone_template != null ? var.full_clone : null
 
   # BIOS et Boot
-  bios   = var.bios
-  boot   = var.boot_order
-  tablet = var.tablet
+  bios     = var.bios
+  boot     = var.boot_order
+  tablet   = var.tablet
+  keyboard = var.keyboard
 
   # VGA Configuration
   vga {

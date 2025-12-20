@@ -148,3 +148,9 @@ variable "pool" {
   type        = string
   default     = ""
 }
+
+variable "keyboard" {
+  description = "Keyboard layout for VNC console (fr, en-us, de, etc.)"
+  type        = string
+  default     = "fr"
+}
