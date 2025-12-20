@@ -119,14 +119,13 @@ resource "proxmox_vm_qemu" "vm" {
   # Attendre que cloud-init soit prêt
   skip_ipv6 = true
 
-  # When using custom cloud-init ISO, explicitly disable Proxmox native cloud-init
-  # to prevent it from overriding our ISO configuration
-  ciupgrade = local.use_cloudinit_iso ? false : null
-
   lifecycle {
     ignore_changes = [
       # Ignorer les changements sur le réseau si l'IP est gérée par cloud-init
       network,
+      # Ignore cloud-init params that provider might set
+      ciupgrade,
+      cicustom,
     ]
   }
 }

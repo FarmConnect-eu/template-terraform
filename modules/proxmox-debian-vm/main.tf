@@ -1,10 +1,8 @@
 locals {
-  # Template par défaut - Debian 13 (Trixie) generic cloud only
-  default_templates = {
-    "13" = "debian-13-genericcloud"
-  }
+  # Template par défaut - Debian 13 (Trixie) nocloud
+  default_template = "debian-13-template"
 
-  template_name = var.clone_template != null ? var.clone_template : local.default_templates[var.debian_version]
+  template_name = var.clone_template != null ? var.clone_template : local.default_template
 
   # Tags : ajouter "debian" et la version
   all_tags = concat(
