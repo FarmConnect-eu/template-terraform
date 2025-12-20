@@ -32,14 +32,3 @@ output "vm_state" {
   description = "État actuel de la VM"
   value       = module.vm.vm_state
 }
-
-output "vm_password" {
-  description = "Auto-generated password for fc-admin user"
-  value       = random_password.vm_password.result
-  sensitive   = true
-}
-
-output "vm_user" {
-  description = "VM default user (standardized across all VMs)"
-  value       = "fc-admin"
-}

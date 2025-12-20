@@ -12,38 +12,6 @@ locals {
     var.tags
   )
   tags_string = join(",", local.all_tags)
-
-  # Cloud-init ISO mode (for complex operations like runcmd, packages)
-  use_cloud_init_iso = var.create_cloud_init_iso
-  use_external_iso   = var.cloud_init_iso_id != null
-
-  # Password: use provided or generate
-  effective_password = var.cipassword != null ? var.cipassword : random_password.vm_password.result
-
-  # SSH keys as newline-separated string for native cloud-init
-  sshkeys_string = length(var.ssh_keys) > 0 ? join("\n", var.ssh_keys) : null
-}
-
-# Auto-generate secure password for fc-admin user
-resource "random_password" "vm_password" {
-  length  = 16
-  special = false # Avoid special chars for console compatibility
-}
-
-# Auto-create cloud-init ISO if enabled (legacy mode)
-resource "proxmox_cloud_init_disk" "auto" {
-  count = local.use_cloud_init_iso ? 1 : 0
-
-  name     = "${var.vm_name}-cloud-init"
-  pve_node = var.target_node
-  storage  = var.disk_storage
-
-  user_data = templatefile("${path.module}/templates/cloud-init-basic.yml", {
-    hostname    = var.vm_name
-    ssh_keys    = var.ssh_keys
-    ci_user     = var.ciuser
-    ci_password = local.effective_password
-  })
 }
 
 module "vm" {
@@ -92,19 +60,8 @@ module "vm" {
   os_type = "cloud-init"
   qemu_os = "l26"
 
-  # Cloud-init ISO (for complex operations: runcmd, write_files, packages)
-  cloud_init_iso_id = local.use_external_iso ? var.cloud_init_iso_id : (local.use_cloud_init_iso && length(proxmox_cloud_init_disk.auto) > 0 ? proxmox_cloud_init_disk.auto[0].id : null)
-
-  # Native cloud-init params (always passed through for hybrid configuration)
-  # These work alongside cloud-init ISO:
-  # - Native: user, password, network (reliable, handled by Proxmox)
-  # - ISO: runcmd, write_files, packages (complex operations)
-  ciuser       = var.ciuser
-  cipassword   = local.effective_password
-  sshkeys      = local.sshkeys_string
-  ipconfig0    = var.ipconfig0
-  nameserver   = var.nameserver
-  searchdomain = var.searchdomain
+  # Cloud-init ISO (handles EVERYTHING: user, password, network, packages, runcmd)
+  cloud_init_iso_id = var.cloud_init_iso_id
 
   # BIOS/Boot Configuration (UEFI pour Debian moderne)
   bios       = "ovmf"

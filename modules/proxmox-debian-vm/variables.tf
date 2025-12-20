@@ -100,52 +100,8 @@ variable "network_firewall" {
 }
 
 # Cloud-Init Configuration
-variable "ssh_keys" {
-  description = "SSH public keys for fc-admin user"
-  type        = list(string)
-  default     = []
-}
-
-variable "create_cloud_init_iso" {
-  description = "Auto-create cloud-init ISO. Set to false to use native provider params or external ISO."
-  type        = bool
-  default     = true
-}
-
 variable "cloud_init_iso_id" {
-  description = "ID of external cloud-init ISO. If provided, set create_cloud_init_iso=false."
-  type        = string
-  default     = null
-}
-
-# Native cloud-init params (used when create_cloud_init_iso=false and cloud_init_iso_id=null)
-variable "ciuser" {
-  description = "Cloud-init user name (native provider param)"
-  type        = string
-  default     = "fc-admin"
-}
-
-variable "cipassword" {
-  description = "Cloud-init user password for console access (native provider param)"
-  type        = string
-  default     = null
-  sensitive   = true
-}
-
-variable "ipconfig0" {
-  description = "Cloud-init IP config (e.g., 'ip=10.10.40.10/24,gw=10.10.40.1')"
-  type        = string
-  default     = null
-}
-
-variable "nameserver" {
-  description = "Cloud-init DNS nameserver"
-  type        = string
-  default     = null
-}
-
-variable "searchdomain" {
-  description = "Cloud-init DNS search domain"
+  description = "Cloud-init ISO ID (from proxmox_cloud_init_disk). ISO handles EVERYTHING: user, password, network, packages, runcmd."
   type        = string
   default     = null
 }

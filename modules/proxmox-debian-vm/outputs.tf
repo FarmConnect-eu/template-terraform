@@ -32,14 +32,3 @@ output "vm_state" {
   description = "État actuel de la VM"
   value       = module.vm.vm_state
 }
-
-output "vm_password" {
-  description = "Password for cloud-init user (auto-generated or provided)"
-  value       = local.effective_password
-  sensitive   = true
-}
-
-output "vm_user" {
-  description = "Cloud-init user name"
-  value       = var.ciuser
-}

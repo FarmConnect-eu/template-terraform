@@ -14,31 +14,6 @@ locals {
   tags_string = join(",", local.all_tags)
 }
 
-# Auto-generate secure password for fc-admin user
-resource "random_password" "vm_password" {
-  length  = 24
-  special = true
-  numeric = true
-  upper   = true
-  lower   = true
-}
-
-# Auto-create cloud-init ISO if enabled
-resource "proxmox_cloud_init_disk" "auto" {
-  count = var.create_cloud_init_iso ? 1 : 0
-
-  name     = "${var.vm_name}-cloud-init"
-  pve_node = var.target_node
-  storage  = var.disk_storage
-
-  user_data = templatefile("${path.module}/templates/cloud-init-basic.yml", {
-    hostname    = var.vm_name
-    ssh_keys    = var.ssh_keys
-    ci_user     = "fc-admin"
-    ci_password = random_password.vm_password.result
-  })
-}
-
 module "vm" {
   source = "../proxmox-vm"
 
@@ -81,10 +56,12 @@ module "vm" {
   vlan_tag         = var.vlan_tag
   network_firewall = var.network_firewall
 
-  # Cloud-Init Configuration via ISO
-  os_type           = "cloud-init"
-  qemu_os           = "l26"
-  cloud_init_iso_id = var.cloud_init_iso_id != null ? var.cloud_init_iso_id : (length(proxmox_cloud_init_disk.auto) > 0 ? proxmox_cloud_init_disk.auto[0].id : null)
+  # Cloud-Init Configuration
+  os_type = "cloud-init"
+  qemu_os = "l26"
+
+  # Cloud-init ISO (handles EVERYTHING: user, password, network, packages, runcmd)
+  cloud_init_iso_id = var.cloud_init_iso_id
 
   # BIOS/Boot Configuration (UEFI pour Ubuntu moderne)
   bios       = "ovmf"

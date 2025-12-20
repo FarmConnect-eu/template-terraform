@@ -100,20 +100,8 @@ variable "network_firewall" {
 }
 
 # Cloud-Init Configuration
-variable "ssh_keys" {
-  description = "SSH public keys for fc-admin user (used when auto-creating cloud-init ISO)"
-  type        = list(string)
-  default     = []
-}
-
-variable "create_cloud_init_iso" {
-  description = "Auto-create cloud-init ISO with basic configuration. Set to false when providing external cloud_init_iso_id."
-  type        = bool
-  default     = true
-}
-
 variable "cloud_init_iso_id" {
-  description = "ID of external cloud-init ISO created with proxmox_cloud_init_disk. If provided, set create_cloud_init_iso=false."
+  description = "Cloud-init ISO ID (from proxmox_cloud_init_disk). ISO handles EVERYTHING: user, password, network, packages, runcmd."
   type        = string
   default     = null
 }

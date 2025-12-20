@@ -182,45 +182,7 @@ variable "qemu_os" {
 }
 
 variable "cloud_init_iso_id" {
-  description = "ID of cloud-init ISO created with proxmox_cloud_init_disk. Takes precedence over ciuser/cipassword if set."
-  type        = string
-  default     = null
-}
-
-# Cloud-Init User Configuration (alternative to cloud_init_iso_id)
-variable "ciuser" {
-  description = "Cloud-init user name. Used when cloud_init_iso_id is not set."
-  type        = string
-  default     = null
-}
-
-variable "cipassword" {
-  description = "Cloud-init user password (for console access). Used when cloud_init_iso_id is not set."
-  type        = string
-  default     = null
-  sensitive   = true
-}
-
-variable "sshkeys" {
-  description = "SSH public keys for cloud-init user (newline separated). Used when cloud_init_iso_id is not set."
-  type        = string
-  default     = null
-}
-
-variable "ipconfig0" {
-  description = "Cloud-init IP configuration (e.g., 'ip=10.10.40.10/24,gw=10.10.40.1'). Used when cloud_init_iso_id is not set."
-  type        = string
-  default     = null
-}
-
-variable "nameserver" {
-  description = "Cloud-init DNS nameserver. Used when cloud_init_iso_id is not set."
-  type        = string
-  default     = null
-}
-
-variable "searchdomain" {
-  description = "Cloud-init DNS search domain. Used when cloud_init_iso_id is not set."
+  description = "Cloud-init ISO ID (from proxmox_cloud_init_disk). ISO handles EVERYTHING: user, password, network, packages, runcmd."
   type        = string
   default     = null
 }
