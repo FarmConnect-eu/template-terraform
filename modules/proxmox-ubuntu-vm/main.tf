@@ -12,6 +12,9 @@ locals {
     var.tags
   )
   tags_string = join(",", local.all_tags)
+
+  # Boot order: include ide2 (cloud-init ISO) when used
+  boot_order = var.cloud_init_iso_id != null ? "order=scsi0;ide2" : "order=scsi0"
 }
 
 module "vm" {
@@ -65,7 +68,7 @@ module "vm" {
 
   # BIOS/Boot Configuration (UEFI pour Ubuntu moderne)
   bios       = "ovmf"
-  boot_order = "order=scsi0"
+  boot_order = local.boot_order
   tablet     = true
 
   # VM Lifecycle
