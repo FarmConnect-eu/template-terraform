@@ -80,6 +80,15 @@ variable "disk_storage" {
   type        = string
 }
 
+variable "additional_disks" {
+  description = "Additional data disks (e.g. for ZFS). Each disk gets slot scsi1, scsi2, etc."
+  type = list(object({
+    size    = string
+    storage = string
+  }))
+  default = []
+}
+
 # Network Configuration
 variable "network_bridge" {
   description = "Bridge réseau Proxmox"

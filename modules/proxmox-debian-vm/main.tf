@@ -43,6 +43,7 @@ module "vm" {
   # Disk Configuration (optimisé pour Linux)
   disk_size          = var.disk_size
   disk_storage       = var.disk_storage
+  additional_disks   = var.additional_disks
   disk_type          = "scsi"
   disk_format        = "raw"
   disk_cache         = "none"

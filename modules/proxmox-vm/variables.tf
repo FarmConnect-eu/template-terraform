@@ -137,6 +137,15 @@ variable "scsihw" {
   default     = "virtio-scsi-single"
 }
 
+variable "additional_disks" {
+  description = "Additional data disks (e.g. for ZFS). Each disk gets slot scsi1, scsi2, etc."
+  type = list(object({
+    size    = string
+    storage = string
+  }))
+  default = []
+}
+
 # Network Configuration
 variable "network_model" {
   description = "Modèle de carte réseau (virtio recommandé pour Linux)"

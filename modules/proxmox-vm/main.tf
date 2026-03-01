@@ -66,6 +66,24 @@ resource "proxmox_vm_qemu" "vm" {
     }
   }
 
+  # Additional data disks (scsi1, scsi2, etc.)
+  dynamic "disk" {
+    for_each = var.additional_disks
+    content {
+      type       = "disk"
+      slot       = "scsi${disk.key + 1}"
+      storage    = disk.value.storage
+      size       = disk.value.size
+      format     = var.disk_format
+      cache      = var.disk_cache
+      discard    = var.disk_discard
+      emulatessd = var.disk_ssd_emulation
+      iothread   = var.disk_iothread
+      backup     = true
+      replicate  = false
+    }
+  }
+
   # ISO disk (ide0)
   dynamic "disk" {
     for_each = var.iso_file != null ? [1] : []

@@ -23,7 +23,7 @@ module "vm" {
   target_node  = "pve-node-1"
   disk_storage = "local-lvm"
 
-  clone_template = "debian-13-genericcloud"
+  clone_template = "debian-13-template"
 }
 ```
 
@@ -47,7 +47,7 @@ module "vm" {
   vm_name           = "svc-app-1"
   target_node       = "pve-node-1"
   disk_storage      = "local-lvm"
-  clone_template    = "debian-13-genericcloud"
+  clone_template    = "debian-13-template"
   cloud_init_iso_id = proxmox_cloud_init_disk.app.id
 }
 ```
@@ -61,7 +61,7 @@ module "vm" {
   vm_name        = "svc-postgres-1"
   target_node    = "pve-node-1"
   disk_storage   = "local-lvm"
-  clone_template = "debian-13-genericcloud"
+  clone_template = "debian-13-template"
 
   network_bridge = "vmbr0"
   vlan_tag       = 20  # Services VLAN

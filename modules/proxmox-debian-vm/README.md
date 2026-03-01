@@ -176,7 +176,7 @@ To customize, set `create_cloud_init_iso = false` and provide `cloud_init_iso_id
 
 | Version | Template Name | Notes |
 |---------|---------------|-------|
-| 13 | `debian-13-genericcloud` | Trixie (default) |
+| 13 | `debian-13-template` | Trixie (default) |
 
 ## Optimizations Applied
 
