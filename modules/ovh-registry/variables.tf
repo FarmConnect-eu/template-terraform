@@ -4,7 +4,12 @@ variable "ovh_project_id" {
 }
 
 variable "env" {
-  description = "Environment: recette or prod"
+  description = "Environment: staging or prod"
+  type        = string
+}
+
+variable "service_prefix" {
+  description = "Service name prefix for resource naming (e.g. myproject)"
   type        = string
 }
 
@@ -12,11 +17,6 @@ variable "region" {
   description = "Registry region (GRA, DE, BHS — PAR1 not available for registries)"
   type        = string
   default     = "GRA"
-}
-
-variable "registry_admin_email" {
-  description = "Admin email for the registry user"
-  type        = string
 }
 
 variable "registry_plan" {

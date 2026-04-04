@@ -26,7 +26,7 @@ resource "ovh_cloud_project_gateway" "this" {
   count = var.gateway_network_key != "" ? 1 : 0
 
   service_name = var.ovh_project_id
-  name         = "${var.env}-agrimaker-gateway"
+  name         = "${var.env}-${var.service_prefix}-gateway"
   model        = var.gateway_model
   region       = var.region
   network_id   = ovh_cloud_project_network_private.this[var.gateway_network_key].regions_openstack_ids[var.region]

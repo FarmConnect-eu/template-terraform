@@ -1,20 +1,12 @@
-output "s3_bucket_billing" {
-  description = "Billing bucket name"
-  value       = "agrimaker-billing-ovh"
-}
-
-output "s3_bucket_services" {
-  description = "Services bucket name"
-  value       = "agrimaker-services-ovh"
-}
-
-output "s3_bucket_wordpress_backup" {
-  description = "WordPress backup bucket name"
-  value       = "agrimaker-wordpress-backup-ovh"
+output "buckets" {
+  description = "Map of created buckets (key => bucket name)"
+  value = {
+    for key, bucket in ovh_cloud_project_storage.this : key => bucket.name
+  }
 }
 
 output "s3_endpoint" {
-  description = "S3-compatible endpoint (replaces AWS S3 endpoint)"
+  description = "S3-compatible endpoint"
   value       = "https://s3.${lower(var.region)}.perf.cloud.ovh.net"
 }
 

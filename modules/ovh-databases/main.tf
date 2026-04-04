@@ -2,7 +2,7 @@
 # due to OVH API instability — 409/500 with state drift)
 resource "ovh_cloud_project_database" "postgresql" {
   service_name = var.ovh_project_id
-  description  = "${var.env}-agrimaker-postgresql"
+  description  = "${var.env}-${var.service_prefix}-postgresql"
   engine       = "postgresql"
   version      = var.postgresql_version
   plan         = var.db_plan
@@ -33,10 +33,10 @@ resource "ovh_cloud_project_database" "postgresql" {
   }
 }
 
-# MySQL for WordPress (Aurora MySQL -> OVH MySQL)
+# MySQL cluster
 resource "ovh_cloud_project_database" "mysql_wordpress" {
   service_name = var.ovh_project_id
-  description  = "${var.env}-agrimaker-wordpress"
+  description  = "${var.env}-${var.service_prefix}-wordpress"
   engine       = "mysql"
   version      = var.mysql_version
   plan         = var.db_plan
@@ -57,10 +57,10 @@ resource "ovh_cloud_project_database" "mysql_wordpress" {
   }
 }
 
-# OpenSearch for application traces
+# OpenSearch cluster
 resource "ovh_cloud_project_database" "opensearch" {
   service_name = var.ovh_project_id
-  description  = "${var.env}-agrimaker-opensearch"
+  description  = "${var.env}-${var.service_prefix}-opensearch"
   engine       = "opensearch"
   version      = var.opensearch_version
   plan         = var.opensearch_plan

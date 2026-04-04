@@ -4,7 +4,7 @@ variable "ovh_project_id" {
 }
 
 variable "env" {
-  description = "Environment: recette or prod"
+  description = "Environment: staging or prod"
   type        = string
 }
 
@@ -17,4 +17,9 @@ variable "region" {
 variable "s3_user_id" {
   description = "OVH user ID for S3 credentials"
   type        = string
+}
+
+variable "buckets" {
+  description = "Map of S3 buckets to create. Key is the logical name, value is the bucket name."
+  type        = map(string)
 }

@@ -4,7 +4,7 @@ variable "ovh_project_id" {
 }
 
 variable "env" {
-  description = "Environment: recette or prod"
+  description = "Environment: staging or prod"
   type        = string
   validation {
     condition     = contains(["staging", "prod"], var.env)
@@ -12,8 +12,13 @@ variable "env" {
   }
 }
 
+variable "service_prefix" {
+  description = "Service name prefix for resource naming (e.g. myproject)"
+  type        = string
+}
+
 variable "region" {
-  description = "OVH region (GRA9 for Gravelines)"
+  description = "OVH region (e.g. GRA9)"
   type        = string
   default     = "GRA9"
 }
@@ -24,13 +29,19 @@ variable "kubernetes_version" {
   default     = "1.31"
 }
 
-variable "node_flavor" {
-  description = "Node flavor (b3-8 recette, b3-16 prod)"
-  type        = string
-  default     = "b3-16"
-}
-
 variable "private_network_id" {
   description = "vRack private network ID (from ovh-networking module)"
   type        = string
+}
+
+variable "node_pools" {
+  description = "Map of node pools to create. Key is the pool name."
+  type = map(object({
+    flavor_name   = string
+    desired_nodes = number
+    min_nodes     = number
+    max_nodes     = number
+    autoscale     = bool
+    labels        = optional(map(string), {})
+  }))
 }

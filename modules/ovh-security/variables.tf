@@ -4,79 +4,45 @@ variable "ovh_project_id" {
 }
 
 variable "env" {
-  description = "Environment: recette or prod"
+  description = "Environment: staging or prod"
+  type        = string
+}
+
+variable "service_prefix" {
+  description = "Service name prefix for resource naming (e.g. myproject)"
+  type        = string
+}
+
+variable "ovh_subsidiary" {
+  description = "OVH subsidiary code (FR, DE, etc.)"
   type        = string
 }
 
 variable "kms_region" {
-  description = "KMS region (eu-west-par for Paris)"
+  description = "KMS region (e.g. eu-west-par)"
   type        = string
   default     = "eu-west-par"
 }
 
-variable "jwt_security_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "messengeo_sms_secret" {
-  type      = string
-  sensitive = true
-}
-
-variable "messengeo_email_secret" {
-  type      = string
-  sensitive = true
-}
-
-variable "auth_private_key_pem" {
-  type      = string
-  sensitive = true
-}
-
-variable "auth_legacy_jwt" {
-  type      = string
-  sensitive = true
-}
-
-variable "cookie_encryption_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "icownect_tokensalt" {
-  type      = string
-  sensitive = true
-}
-
-variable "baqio_api_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "oauth_portal1_secret" {
-  type      = string
-  sensitive = true
-}
-
-variable "oauth_agrimaker_secret" {
-  type      = string
-  sensitive = true
-}
-
-variable "dataprotection_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "s3_access_key" {
-  description = "S3 access key (from ovh-storage module)"
+variable "secrets_prefix" {
+  description = "Path prefix for secrets in KMS (e.g. phoenix)"
   type        = string
-  sensitive   = true
 }
 
-variable "s3_secret_key" {
-  description = "S3 secret key (from ovh-storage module)"
+variable "key_type" {
+  description = "KMS service key type"
   type        = string
+  default     = "RSA"
+}
+
+variable "key_size" {
+  description = "KMS service key size in bits"
+  type        = number
+  default     = 4096
+}
+
+variable "secrets" {
+  description = "Map of secrets to store in KMS. Key is the secret name, value is the secret data."
+  type        = map(string)
   sensitive   = true
 }

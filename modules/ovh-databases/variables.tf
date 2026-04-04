@@ -4,7 +4,12 @@ variable "ovh_project_id" {
 }
 
 variable "env" {
-  description = "Environment: recette or prod"
+  description = "Environment: staging or prod"
+  type        = string
+}
+
+variable "service_prefix" {
+  description = "Service name prefix for resource naming (e.g. myproject)"
   type        = string
 }
 
@@ -48,7 +53,7 @@ variable "db_plan" {
 }
 
 variable "db_flavor" {
-  description = "Database node flavor (db1-4 recette, db1-15 prod)"
+  description = "Database node flavor (e.g. db1-4 for staging, db1-15 for prod)"
   type        = string
 }
 
