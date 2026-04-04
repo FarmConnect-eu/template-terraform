@@ -14,11 +14,6 @@ variable "region" {
   default     = "GRA"
 }
 
-variable "s3_user_id" {
-  description = "OVH user ID for S3 credentials"
-  type        = string
-}
-
 variable "buckets" {
   description = "Map of S3 buckets to create. Key is the logical name, value is the bucket name."
   type        = map(string)
