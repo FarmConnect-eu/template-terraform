@@ -41,8 +41,13 @@ variable "key_size" {
   default     = 4096
 }
 
-variable "secrets" {
-  description = "Map of secrets to store in KMS. Key is the secret name, value is the secret data."
+variable "secret_names" {
+  description = "List of secret names to store in KMS (used for for_each, must not be sensitive)"
+  type        = set(string)
+}
+
+variable "secret_values" {
+  description = "Map of secret name to secret data (sensitive values)"
   type        = map(string)
   sensitive   = true
 }

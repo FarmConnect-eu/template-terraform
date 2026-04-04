@@ -15,11 +15,11 @@ resource "ovh_okms_service_key" "main" {
 
 # Application secrets stored in KMS
 resource "ovh_okms_secret" "this" {
-  for_each = var.secrets
+  for_each = var.secret_names
 
   okms_id = ovh_okms.this.id
-  path    = "${var.env}/${var.secrets_prefix}/${each.key}"
+  path    = "${var.env}/${var.secrets_prefix}/${each.value}"
   version = {
-    data = jsonencode({ value = each.value })
+    data = jsonencode({ value = var.secret_values[each.value] })
   }
 }
