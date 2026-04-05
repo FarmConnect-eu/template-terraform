@@ -33,14 +33,17 @@ resource "null_resource" "nfs_export" {
     exports_content = sha256(local.exports_content)
     project_name    = var.project_name
     nfs_server_host = var.nfs_server_host
+    ssh_user        = var.ssh_user
+    ssh_private_key = var.ssh_private_key
+    ssh_timeout     = var.ssh_timeout
   }
 
   connection {
     type        = "ssh"
-    host        = var.nfs_server_host
-    user        = var.ssh_user
-    private_key = var.ssh_private_key
-    timeout     = var.ssh_timeout
+    host        = self.triggers.nfs_server_host
+    user        = self.triggers.ssh_user
+    private_key = self.triggers.ssh_private_key
+    timeout     = self.triggers.ssh_timeout
   }
 
   # Create directories if requested
