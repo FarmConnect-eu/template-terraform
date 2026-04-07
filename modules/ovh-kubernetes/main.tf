@@ -7,8 +7,8 @@ resource "ovh_cloud_project_kube" "this" {
 
   private_network_id = var.private_network_id
   private_network_configuration {
-    default_vrack_gateway              = ""
-    private_network_routing_as_default = false
+    default_vrack_gateway              = var.vrack_gateway
+    private_network_routing_as_default = true
   }
 
   update_policy = "ALWAYS_UPDATE"

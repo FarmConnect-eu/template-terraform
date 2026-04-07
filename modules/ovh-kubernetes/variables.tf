@@ -34,6 +34,11 @@ variable "private_network_id" {
   type        = string
 }
 
+variable "vrack_gateway" {
+  description = "OPNsense gateway IP on the vRack subnet (e.g. 10.10.20.1 for services-prod)"
+  type        = string
+}
+
 variable "node_pools" {
   description = "Map of node pools to create. Key is the pool name."
   type = map(object({
