@@ -3,11 +3,6 @@ variable "ovh_project_id" {
   type        = string
 }
 
-variable "env" {
-  description = "Environment: staging or prod"
-  type        = string
-}
-
 variable "service_prefix" {
   description = "Service name prefix for resource naming (e.g. myproject)"
   type        = string
@@ -26,6 +21,7 @@ variable "networks" {
     cidr       = string
     dhcp_start = string
     dhcp_end   = string
+    no_gateway = optional(bool, false)
   }))
 }
 
