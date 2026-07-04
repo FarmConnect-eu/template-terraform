@@ -47,7 +47,7 @@ resource "ovh_cloud_project_user_s3_policy" "per_bucket" {
     Statement = [{
       Sid      = "AllowBucketAccess"
       Effect   = "Allow"
-      Action   = ["s3:*"]
+      Action   = var.bucket_actions
       Resource = [
         "arn:aws:s3:::${each.value}",
         "arn:aws:s3:::${each.value}/*"
