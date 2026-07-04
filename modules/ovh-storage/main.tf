@@ -4,6 +4,10 @@ resource "ovh_cloud_project_user" "admin" {
   service_name = var.ovh_project_id
   description  = "S3 admin operator - ${var.env}"
   role_names   = ["objectstore_operator"]
+
+  lifecycle {
+    ignore_changes = [description]
+  }
 }
 
 resource "ovh_cloud_project_user_s3_credential" "admin" {
@@ -31,6 +35,10 @@ resource "ovh_cloud_project_user" "per_bucket" {
   service_name = var.ovh_project_id
   description  = "S3 bucket operator - ${each.value} - ${var.env}"
   role_names   = ["objectstore_operator"]
+
+  lifecycle {
+    ignore_changes = [description]
+  }
 }
 
 resource "ovh_cloud_project_user_s3_credential" "per_bucket" {
@@ -45,9 +53,9 @@ resource "ovh_cloud_project_user_s3_policy" "per_bucket" {
   user_id      = ovh_cloud_project_user.per_bucket[each.key].id
   policy = jsonencode({
     Statement = [{
-      Sid      = "AllowBucketAccess"
-      Effect   = "Allow"
-      Action   = var.bucket_actions
+      Sid    = "AllowBucketAccess"
+      Effect = "Allow"
+      Action = var.bucket_actions
       Resource = [
         "arn:aws:s3:::${each.value}",
         "arn:aws:s3:::${each.value}/*"
