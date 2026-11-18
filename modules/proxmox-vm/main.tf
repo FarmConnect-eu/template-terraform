@@ -48,6 +48,28 @@ resource "proxmox_vm_qemu" "vm" {
   # SCSI Controller
   scsihw = var.scsihw
 
+  # Keep disks in slot order (ide < sata < scsi < virtio): the provider reads them back
+  # sorted, so any other order shows a permanent diff and reboots the VM on every apply.
+  # ISO disk (ide0)
+  dynamic "disk" {
+    for_each = var.iso_file != null ? [1] : []
+    content {
+      type = "cdrom"
+      slot = "ide0"
+      iso  = var.iso_file
+    }
+  }
+
+  # Cloud-init ISO disk (ide2)
+  dynamic "disk" {
+    for_each = local.use_cloudinit_iso ? [1] : []
+    content {
+      type = "cdrom"
+      slot = "ide2"
+      iso  = var.cloud_init_iso_id
+    }
+  }
+
   # Main disk (scsi0, virtio0, or sata0 depending on disk_type)
   dynamic "disk" {
     for_each = var.clone_template != null || var.iso_file != null ? [1] : []
@@ -81,26 +103,6 @@ resource "proxmox_vm_qemu" "vm" {
       iothread   = var.disk_iothread
       backup     = true
       replicate  = false
-    }
-  }
-
-  # ISO disk (ide0)
-  dynamic "disk" {
-    for_each = var.iso_file != null ? [1] : []
-    content {
-      type = "cdrom"
-      slot = "ide0"
-      iso  = var.iso_file
-    }
-  }
-
-  # Cloud-init ISO disk (ide2)
-  dynamic "disk" {
-    for_each = local.use_cloudinit_iso ? [1] : []
-    content {
-      type = "cdrom"
-      slot = "ide2"
-      iso  = var.cloud_init_iso_id
     }
   }
 
@@ -150,6 +152,8 @@ resource "proxmox_vm_qemu" "vm" {
       # Ignore cloud-init params that provider might set
       ciupgrade,
       cicustom,
+      # PVE returns -1 defaults the module never sets: permanent diff otherwise
+      startup_shutdown,
     ]
   }
 }
