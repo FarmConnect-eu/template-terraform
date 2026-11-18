@@ -109,7 +109,7 @@ resource "proxmox_vm_qemu" "vm" {
     id        = 0
     model     = var.network_model
     bridge    = var.network_bridge
-    tag       = var.vlan_tag > 0 ? var.vlan_tag : -1
+    tag       = var.vlan_tag > 0 ? var.vlan_tag : null # provider rejects -1
     firewall  = var.network_firewall
     rate      = var.network_rate_limit > 0 ? var.network_rate_limit : null
     link_down = false
@@ -133,12 +133,12 @@ resource "proxmox_vm_qemu" "vm" {
 
   # VM Lifecycle
   start_at_node_boot = var.onboot
-  vm_state         = var.vm_state
-  agent            = var.agent
-  agent_timeout    = var.agent_timeout
-  automatic_reboot = var.automatic_reboot
-  protection       = var.protection
-  hotplug          = var.hotplug
+  vm_state           = var.vm_state
+  agent              = var.agent
+  agent_timeout      = var.agent_timeout
+  automatic_reboot   = var.automatic_reboot
+  protection         = var.protection
+  hotplug            = var.hotplug
 
   # Attendre que cloud-init soit prêt
   skip_ipv6 = true
